@@ -18,7 +18,7 @@ void Main(void)
     int maxId = 0;
     
     int newElementSize = 0x20;
-    int newDataSize = 0x30;
+    int newDataSize = 0x10;
     int newBothSize = newElementSize + newDataSize;
     
     FileSelect(GetFileNum());
@@ -148,12 +148,12 @@ void Main(void)
     
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].field_0x00 = maxId + 1;
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].UnkNameOffset = newElementSize + dataSize + newDataSize + assetGroupsSize + setupDataArraySize;
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].TimelineElemUnionTypeOrLayerId = 17;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].TimelineElemUnionTypeOrLayerId = 1086;
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].Offset_0x1C = newElementSize + dataSize;
     
     RunTemplate("FF16_tlb_FileCharaTimeLine.bt");
     
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.UnionType = 17;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.UnionType = 1086;
     
     RunTemplate("FF16_tlb_FileCharaTimeLine.bt");
 }
