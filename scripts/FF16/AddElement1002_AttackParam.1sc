@@ -18,7 +18,7 @@ void Main(void)
     int maxId = 0;
     
     int newElementSize = 0x20;
-    int newDataSize = 0x10;
+    int newDataSize = 0x35;
     int newBothSize = newElementSize + newDataSize;
     
     FileSelect(GetFileNum());
@@ -27,9 +27,9 @@ void Main(void)
     
     headerSize = CharaTimelineFile.Header.TimelineOffset;
     timelineSize = CharaTimelineFile.Timeline.TimelineElementsOffset;
-    elementsSize = CharaTimelineFile.Timeline.TimelineElementList.Elements[0].Offset_0x1C;
+    elementsSize = CharaTimelineFile.Timeline.TimelineElementList.Elements[0].DataOffset;
     dataSize = CharaTimelineFile.Timeline.AssetGroupsOffset - elementsSize - timelineSize;
-    assetGroupsSize = CharaTimelineFile.Timeline.SetupDataArrayOffset - dataSize - elementsSize - timelineSize;
+    assetGroupsSize = CharaTimelineFile.Timeline.TargetsArrayOffset - dataSize - elementsSize - timelineSize;
     setupDataArraySize = CharaTimelineFile.Timeline.TimelineElementList.Elements[0].UnkNameOffset - assetGroupsSize - dataSize - elementsSize;
     namesSize = FileSize() - setupDataArraySize - assetGroupsSize - dataSize - elementsSize - timelineSize - headerSize;
     
@@ -37,7 +37,7 @@ void Main(void)
     newDataOffset = newElementOffset + dataSize + newElementSize;
     
     CharaTimelineFile.Timeline.AssetGroupsOffset += newBothSize;
-    CharaTimelineFile.Timeline.SetupDataArrayOffset += newBothSize;
+    CharaTimelineFile.Timeline.TargetsArrayOffset += newBothSize;
     
     for (i = 0; i < CharaTimelineFile.Timeline.TimelineElementCount; i++)
     {
@@ -48,9 +48,9 @@ void Main(void)
         
         CharaTimelineFile.Timeline.TimelineElementList.Elements[i].UnkNameOffset += newBothSize;
         
-        if (CharaTimelineFile.Timeline.TimelineElementList.Elements[i].Offset_0x1C > 0)
+        if (CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataOffset > 0)
         {
-            CharaTimelineFile.Timeline.TimelineElementList.Elements[i].Offset_0x1C += newElementSize;
+            CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataOffset += newElementSize;
         }
         
         switch (CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.UnionType)
@@ -59,7 +59,7 @@ void Main(void)
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Anim.AssetPathOffset += newDataSize;
                 break;
             case kTimelineElem_PlaySoundTrigger:
-                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Sound.AssetPathOffset += newDataSize;
+                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Sound.AssetPathOffset += newBothSize;
                 break;
             case kTimelineElem_ModelSE:
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.SoundPathOffset += newDataSize;
@@ -96,12 +96,12 @@ void Main(void)
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.UnkName2Offset += newDataSize;
                 break;
             case kTimelineElem_1023:
-                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Offset_0x00 -= newElementSize; //Negative offset
+                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFXParamsOffset -= newElementSize; //Negative offset
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFX.AssetPathOffset += newDataSize;
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Se.AssetPathOffset += newDataSize;
                 break;
             case 1030:
-                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Offset_0x00 -= newElementSize; //Negative offset
+                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFXParamsOffset -= newElementSize; //Negative offset
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.UnkNameOffset3 += newDataSize;
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFX.AssetPathOffset += newDataSize;
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Se.AssetPathOffset += newDataSize;
@@ -110,7 +110,7 @@ void Main(void)
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Anim.AssetPathOffset += newDataSize;
                 break;
             case 1049:
-                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Offset_0x00 -= newElementSize; //Negative offset
+                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFXParamsOffset -= newElementSize; //Negative offset
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFX.AssetPathOffset += newDataSize;
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Se.AssetPathOffset += newDataSize;
                 break;
@@ -148,13 +148,27 @@ void Main(void)
     
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].field_0x00 = maxId + 1;
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].UnkNameOffset = newElementSize + dataSize + newDataSize + assetGroupsSize + setupDataArraySize;
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].TimelineElemUnionTypeOrLayerId = 1008;
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].Offset_0x1C = newElementSize + dataSize;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].TimelineElemUnionTypeOrLayerId = 1002;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataOffset = newElementSize + dataSize;
     
     RunTemplate("FF16_tlb_FileCharaTimeLine.bt");
     
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.UnionType = 1008;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.UnionType = 1002;
     
+    RunTemplate("FF16_tlb_FileCharaTimeLine.bt");
+    
+    string name = "ChargeSlash_Air";
+    int nameLength = 15 + 1;
+    
+    FSeek(FileSize());
+    InsertBytes(FileSize(), nameLength, 0x00);
+    FPrintf(GetFileNum(), name);
+    
+    int nameOffset = newDataSize + assetGroupsSize + setupDataArraySize + namesSize;
+    
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.ElementData.NameOffset = nameOffset;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.ElementData.UnkName2Offset = nameOffset + nameLength - 1;
+
     RunTemplate("FF16_tlb_FileCharaTimeLine.bt");
 }
 

@@ -18,7 +18,7 @@ void Main(void)
     int maxId = 0;
     
     int newElementSize = 0x20;
-    int newDataSize = 0x28;
+    int newDataSize = 0x10;
     int newBothSize = newElementSize + newDataSize;
     
     FileSelect(GetFileNum());
@@ -59,7 +59,7 @@ void Main(void)
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Anim.AssetPathOffset += newDataSize;
                 break;
             case kTimelineElem_PlaySoundTrigger:
-                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Sound.AssetPathOffset += newDataSize;
+                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Sound.AssetPathOffset += newBothSize;
                 break;
             case kTimelineElem_ModelSE:
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.SoundPathOffset += newDataSize;
@@ -96,12 +96,12 @@ void Main(void)
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.UnkName2Offset += newDataSize;
                 break;
             case kTimelineElem_1023:
-                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Offset_0x00 -= newElementSize; //Negative offset
+                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFXParamsOffset -= newElementSize; //Negative offset
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFX.AssetPathOffset += newDataSize;
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Se.AssetPathOffset += newDataSize;
                 break;
             case 1030:
-                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Offset_0x00 -= newElementSize; //Negative offset
+                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFXParamsOffset -= newElementSize; //Negative offset
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.UnkNameOffset3 += newDataSize;
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFX.AssetPathOffset += newDataSize;
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Se.AssetPathOffset += newDataSize;
@@ -110,7 +110,7 @@ void Main(void)
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Anim.AssetPathOffset += newDataSize;
                 break;
             case 1049:
-                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Offset_0x00 -= newElementSize; //Negative offset
+                CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFXParamsOffset -= newElementSize; //Negative offset
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.VFX.AssetPathOffset += newDataSize;
                 CharaTimelineFile.Timeline.TimelineElementList.Elements[i].DataUnion.ElementData.Se.AssetPathOffset += newDataSize;
                 break;
@@ -148,12 +148,12 @@ void Main(void)
     
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].field_0x00 = maxId + 1;
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].UnkNameOffset = newElementSize + dataSize + newDataSize + assetGroupsSize + setupDataArraySize;
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].TimelineElemUnionTypeOrLayerId = 1012;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].TimelineElemUnionTypeOrLayerId = 1008;
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataOffset = newElementSize + dataSize;
     
     RunTemplate("FF16_tlb_FileCharaTimeLine.bt");
     
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.UnionType = 1012;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.UnionType = 1008;
     
     RunTemplate("FF16_tlb_FileCharaTimeLine.bt");
 }
