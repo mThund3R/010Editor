@@ -27,7 +27,7 @@ void Main(void)
     
     headerSize = CharaTimelineFile.Header.TimelineOffset;
     timelineSize = CharaTimelineFile.Timeline.TimelineElementsOffset;
-    elementsSize = CharaTimelineFile.Timeline.TimelineElementList.Elements[0].Offset_0x1C;
+    elementsSize = CharaTimelineFile.Timeline.TimelineElementList.Elements[0].DataOffset;
     dataSize = CharaTimelineFile.Timeline.AssetGroupsOffset - elementsSize - timelineSize;
     assetGroupsSize = CharaTimelineFile.Timeline.TargetsArrayOffset - dataSize - elementsSize - timelineSize;
     setupDataArraySize = CharaTimelineFile.Timeline.TimelineElementList.Elements[0].UnkNameOffset - assetGroupsSize - dataSize - elementsSize;

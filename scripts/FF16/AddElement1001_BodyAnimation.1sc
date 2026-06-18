@@ -18,7 +18,7 @@ void Main(void)
     int maxId = 0;
     
     int newElementSize = 0x20;
-    int newDataSize = 0x38;
+    int newDataSize = 0x3C;
     int newBothSize = newElementSize + newDataSize;
     
     FileSelect(GetFileNum());
@@ -148,26 +148,26 @@ void Main(void)
     
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].field_0x00 = maxId + 1;
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].UnkNameOffset = newElementSize + dataSize + newDataSize + assetGroupsSize + setupDataArraySize;
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].TimelineElemUnionTypeOrLayerId = 1002;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].TimelineElemUnionTypeOrLayerId = 1001;
     CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataOffset = newElementSize + dataSize;
     
     RunTemplate("FF16_tlb_FileCharaTimeLine.bt");
     
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.UnionType = 1002;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.UnionType = 1001;
     
     RunTemplate("FF16_tlb_FileCharaTimeLine.bt");
     
-    string name = "ChargeSlash_Gro_01"; //ComboA_01, ChargeSlash_Gro_01...
+    string name = "animation/chara/c1001/animation/a0001/wep_swd_emp/dragon_sword/Light_01.anmb";
     int nameLength = Strlen(name) + 1;
     
     FSeek(FileSize());
     InsertBytes(FileSize(), nameLength, 0x00);
     FPrintf(GetFileNum(), name);
     
-    int nameOffset = newDataSize + assetGroupsSize + setupDataArraySize + namesSize;
+    int nameOffset = newDataSize + assetGroupsSize + setupDataArraySize + namesSize - 0x10;
     
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.ElementData.NameOffset = nameOffset;
-    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.ElementData.UnkName2Offset = nameOffset + nameLength - 1;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.ElementData.Anim.AssetType = 1009;
+    CharaTimelineFile.Timeline.TimelineElementList.Elements[index].DataUnion.ElementData.Anim.AssetPathOffset = nameOffset;
 
     RunTemplate("FF16_tlb_FileCharaTimeLine.bt");
 }
